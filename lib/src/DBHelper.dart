@@ -37,8 +37,7 @@ class DBHelper {
 
   _onCreate(Database db, int version) async {
     // Crear BD
-    await db.execute(
-        "CREATE TABLE $TABLE ($ID INTEGER PRIMARY KEY, $ALBUM_ID TEXT, $TITLE TEXT, $URL TEXT, $THUMBNAIL_URL TEXT)");
+    await db.execute("CREATE TABLE $TABLE ($ID INTEGER PRIMARY KEY, $ALBUM_ID TEXT, $TITLE TEXT, $URL TEXT, $THUMBNAIL_URL TEXT)");
   }
 
   //Método para insertar el registro del álbum en la base de datos
@@ -50,46 +49,45 @@ class DBHelper {
     return album;
   }
 
-    //Metodo para retornar todo los albunes de la bd
-    Future<Albums> getAlbums() async {
-        var dbClient = await db;
-        // especifique los nombres de columna que desee en el conjunto de resultados
-        List<Map> maps =
-            await dbClient.query(TABLE, columns: [ID, TITLE, URL, THUMBNAIL_URL]);
-        Albums allAlbums = Albums();
-        List<Album> albums = [];
-        if (maps.length > 0) {
-            for (int i = 0; i < maps.length; i++) {
-                albums.add(Album.fromJson(maps[i]));
-            }
-        }
-        allAlbums.albums = albums;
-        return allAlbums;
+  //Metodo para retornar todo los albunes de la bd
+  Future<Albums> getAlbums() async {
+    var dbClient = await db;
+    // especifique los nombres de columna que desee en el conjunto de resultados
+    List<Map> maps =
+        await dbClient.query(TABLE, columns: [ID, TITLE, URL, THUMBNAIL_URL]);
+    Albums allAlbums = Albums();
+    List<Album> albums = [];
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
+        albums.add(Album.fromJson(maps[i]));
+      }
     }
+    allAlbums.albums = albums;
+    return allAlbums;
+  }
 
-    // Método para eliminar un álbum de la base de datos
-    Future<int> delete(int id) async {
-        var dbClient = await db;
-        return await dbClient.delete(TABLE, where: '$ID = ?', whereArgs: [id]);
-    }
+  // Método para eliminar un álbum de la base de datos
+  Future<int> delete(int id) async {
+    var dbClient = await db;
+    return await dbClient.delete(TABLE, where: '$ID = ?', whereArgs: [id]);
+  }
 
-    // Método para actualizar un álbum en la base de datos
-    Future<int> update(Album album) async {
-        var dbClient = await db;
-        return await dbClient
-            .update(TABLE, album.toJson(), where: '$ID = ?', whereArgs: [album.id]);
-    }
+  // Método para actualizar un álbum en la base de datos
+  Future<int> update(Album album) async {
+    var dbClient = await db;
+    return await dbClient
+        .update(TABLE, album.toJson(), where: '$ID = ?', whereArgs: [album.id]);
+  }
 
-    // Método para truncar la tabla
-    Future<void> truncateTable() async {
-        var dbClient = await db;
-        return await dbClient.delete(TABLE);
-    }
+  // Método para truncar la tabla
+  Future<void> truncateTable() async {
+    var dbClient = await db;
+    return await dbClient.delete(TABLE);
+  }
 
-    // Método para cerrar la base de datos
-    Future close() async {
-        var dbClient = await db;
-        dbClient.close();
-    }
-
+  // Método para cerrar la base de datos
+  Future close() async {
+    var dbClient = await db;
+    dbClient.close();
+  }
 }
